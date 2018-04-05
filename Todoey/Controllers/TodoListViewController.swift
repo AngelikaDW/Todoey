@@ -10,15 +10,30 @@ import UIKit
 
 class TodoListViewController: UITableViewController {
 
-    var itemArray = ["go to the movies", "meditate", "work"]
+    //var itemArray = ["go to the movies", "meditate", "work"]
+    // Create new items using the custom data model
+    var itemArray = [Item]()
     
     let defaults = UserDefaults.standard
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //create objects from custom data model
+        let newItem = Item()
+        newItem.title = "go to the movies"
+        itemArray.append(newItem)
+        
+        let newItem1 = Item()
+        newItem1.title = "meditate"
+        itemArray.append(newItem1)
+        
+        let newItem2 = Item()
+        newItem2.title = "work"
+        itemArray.append(newItem2)
+        
         //Load date from userDefaults
-        if let items = defaults.array(forKey: "TodoListArray") as? [String] {
+        if let items = defaults.array(forKey: "TodoListArray") as? [Item] {
             itemArray = items
         }
         
@@ -32,7 +47,25 @@ class TodoListViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
-        cell.textLabel?.text = itemArray[indexPath.row]
+        
+        let item = itemArray[indexPath.row] //Current item (the value of the cell) in the tableview
+        
+        //cell.textLabel?.text = itemArray[indexPath.row]
+        cell.textLabel?.text = item.title
+        
+        // Ternary operator ==>
+        // value = condition ? valueIfTrue : valueIfFalse
+        // Reads: "Set the cell's accessoryType depending on whether the item.done is true. If it is true, set it to checkmark, if it is false set it to none
+        cell.accessoryType = item.done ? .checkmark : .none
+        
+        // Long Version
+        //        if item.done == true {
+//            cell.accessoryType = .checkmark
+//        } else {
+//            cell.accessoryType = .none
+//        }
+        
+        
         return cell
     
     }
@@ -44,11 +77,22 @@ class TodoListViewController: UITableViewController {
         //print(itemArray[indexPath.row])
         
         //Adds checkmark Accessory to selected cell and removes it when the cell is deselected
-        if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
-            tableView.cellForRow(at: indexPath)?.accessoryType = .none
-        } else {
-           tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-        }
+//        if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
+//            tableView.cellForRow(at: indexPath)?.accessoryType = .none
+//        } else {
+//           tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
+//        }
+        //Set current row property to the opposite of what it is now REVERSE. So to avoid that the checkmark appears when the cell is being reloaded again and gets again the checkmark it got before
+            //Long version:
+//        if itemArray[indexPath.row].done == true {
+//            itemArray[indexPath.row].done = false
+//        } else {
+//            itemArray[indexPath.row].done = true
+//        }
+            // Elegant swifty version
+            itemArray[indexPath.row].done = !itemArray[indexPath.row].done
+        
+        tableView.reloadData()
         
         // UI that the selected Row just flashes grey to indicate its highlighted and then goes back to normal
         
@@ -66,7 +110,11 @@ class TodoListViewController: UITableViewController {
             //print("Success! The alert Action works")
             
             //Append value of textField to itemArray
-            self.itemArray.append(textField.text!)
+            //self.itemArray.append(textField.text!)
+            let newItem = Item()
+            newItem.title = textField.text!
+            self.itemArray.append(newItem)
+            
             
             //Save new itemArray to UserDefaults
             self.defaults.set(self.itemArray, forKey: "TodoListArray")
