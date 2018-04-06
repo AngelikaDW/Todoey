@@ -23,23 +23,8 @@ class TodoListViewController: UITableViewController {
         
         print(dataFilePath!)
         
-        //create objects from custom data model
-        let newItem = Item()
-        newItem.title = "go to the movies"
-        itemArray.append(newItem)
-        
-        let newItem1 = Item()
-        newItem1.title = "meditate"
-        itemArray.append(newItem1)
-        
-        let newItem2 = Item()
-        newItem2.title = "work"
-        itemArray.append(newItem2)
-        
-        //Load date from userDefaults
-//        if let items = defaults.array(forKey: "TodoListArray") as? [Item] {
-//            itemArray = items
-//        }
+        //Load data from DataFilePath Items.plist
+        loadItems()
         
     }
 
@@ -123,6 +108,18 @@ class TodoListViewController: UITableViewController {
         }
         //reload data to show added item
         self.tableView.reloadData()
+    }
+    
+    func loadItems() {
+        if let data = try? Data(contentsOf: dataFilePath!) {
+            let decoder = PropertyListDecoder()
+            do {
+                itemArray = try decoder.decode([Item].self, from: data)
+            } catch {
+                print("Error decoding itemArray: \(error)")
+            }
+            
+        }
     }
     
 }
