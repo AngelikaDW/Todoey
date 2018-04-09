@@ -11,7 +11,7 @@ import CoreData
 
 class TodoListViewController: UITableViewController {
 
-    //var itemArray = ["go to the movies", "meditate", "work"]
+
     // Create new items using the custom data model
     var itemArray = [Item]()
     
@@ -129,8 +129,16 @@ extension TodoListViewController: UISearchBarDelegate {
         request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
         
         loadItems(with: request)
-
-        
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchBar.text?.count == 0 {
+            loadItems()
+            DispatchQueue.main.async {
+                searchBar.resignFirstResponder()
+            }
+            
+        }
         
     }
 }
