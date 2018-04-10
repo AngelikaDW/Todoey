@@ -45,7 +45,15 @@ class CategoryTableViewController: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
-    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let destinationVC = segue.destination as! TodoListViewController
+        
+        if let indexPath = tableView.indexPathForSelectedRow {
+            print("This is the row clicked: \(categoryArray[indexPath.row])")
+            destinationVC.selectedCategory = categoryArray[indexPath.row]
+        }
+    }
+
     //MARK: - Data manipulation Methods
     
     func saveCategory() {
