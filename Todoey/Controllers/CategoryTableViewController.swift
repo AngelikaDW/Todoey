@@ -10,18 +10,20 @@ import UIKit
 import RealmSwift
 
 class CategoryTableViewController: UITableViewController {
-    
-    let realm = try! Realm()
+    var realm: Realm!
     
     var categoryArray: Results<Category>?
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        realm = try! Realm()
         
         loadCategories()
 
     }
+    
+    
     
     //MARK: - TableView DataSource Methods
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -58,7 +60,7 @@ class CategoryTableViewController: UITableViewController {
     }
 
     //MARK: - Data manipulation Methods
-    
+    // Paramter is category of the Type Category (Obejct class)
     func save(category: Category) {
         
         do {

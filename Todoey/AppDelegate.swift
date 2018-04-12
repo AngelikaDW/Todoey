@@ -19,12 +19,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         //print Location of Realm file
         print(Realm.Configuration.defaultConfiguration.fileURL!)
+        //Prepares for the Migration of the REALM DB when new properties are being added
+        let config = Realm.Configuration(
+            
+            schemaVersion: 1,
+            
+            migrationBlock: { migration, oldSchemaVersion in
+                
+                if (oldSchemaVersion < 1) {
+                    
+                    migration.enumerateObjects(ofType: Category.className()) { (old, new) in
+                        new!["dateCreated"] = Date()
+                    }
+                    migration.enumerateObjects(ofType: Item.className()) { (old, new) in
+                        new!["dateCreated"] = Date()
+                    }
+                }
+        })
         
-        do {
-             let realm = try Realm()
-        } catch  {
-            print("error in initialising new realm, \(error)")
-        }
+        Realm.Configuration.defaultConfiguration = config
+        
+        
+//        do {
+//             let realm = try Realm()
+//        } catch  {
+//            print("error in initialising new realm, \(error)")
+//        }
         
         
         return true
