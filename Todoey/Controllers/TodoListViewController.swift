@@ -69,9 +69,6 @@ class TodoListViewController: UITableViewController {
             
         }
         
-        
-        
-        
         // UI that the selected Row just flashes grey to indicate its highlighted and then goes back to normal
         tableView.deselectRow(at: indexPath, animated: true)
     }
@@ -118,10 +115,11 @@ class TodoListViewController: UITableViewController {
     }
     
     // MARK - Model Manipulation Method
-    
     func loadItems(){
      
         toDoItems = selectedCategory?.items.sorted(byKeyPath: "title", ascending: true)
+        
+        tableView.reloadData()
     }
     
 }
@@ -139,8 +137,10 @@ extension TodoListViewController: UISearchBarDelegate {
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
         if searchBar.text?.count == 0 {
             loadItems()
+            
             //dismiss the searchbar as first Responder
             DispatchQueue.main.async {
                 searchBar.resignFirstResponder()

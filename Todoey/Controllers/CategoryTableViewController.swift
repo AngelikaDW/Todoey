@@ -17,6 +17,7 @@ class CategoryTableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         realm = try! Realm()
         
         loadCategories()
@@ -60,7 +61,7 @@ class CategoryTableViewController: UITableViewController {
     }
 
     //MARK: - Data manipulation Methods
-    // Paramter is category of the Type Category (Obejct class)
+    // Parameter is category of the Type Category (Obejct class)
     func save(category: Category) {
         
         do {
