@@ -34,9 +34,9 @@ class TodoListViewController: SwipeTableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
+        //Get cell from the super class SwipeTableVC - inherenting from super class
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
-        //let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
         //If toDoItems is not nill then do the following:
         if let item = toDoItems?[indexPath.row] {
             //Current item (the value of the cell) in the tableview
@@ -55,7 +55,6 @@ class TodoListViewController: SwipeTableViewController {
     // MARK - TableView delegate Methods
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //UPDATE IN CRUD
         
         //check if the toDoList Item at this row is not nill
         if let item = toDoItems?[indexPath.row] {
@@ -88,7 +87,7 @@ class TodoListViewController: SwipeTableViewController {
         
         let action = UIAlertAction(title: "Add item", style: .default) { (action) in
             //Completion Block: what will happen once the user clicks the add item button on the alert
-            //Check if thethe selectedCategory is not nill
+            //Check if the selectedCategory is not nill
             if let currentCategory = self.selectedCategory {
                 do {
                     try self.realm.write {
@@ -125,6 +124,7 @@ class TodoListViewController: SwipeTableViewController {
         
         tableView.reloadData()
     }
+    
    //MARK: - Delete Categories with Swipe
     
     override func updateModel(at indexPath: IndexPath) {

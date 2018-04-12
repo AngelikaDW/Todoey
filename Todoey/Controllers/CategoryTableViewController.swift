@@ -65,6 +65,7 @@ class CategoryTableViewController: SwipeTableViewController {
     }
 
     //MARK: - Data manipulation Methods
+    
     // Parameter is category of the Type Category (Obejct class)
     func save(category: Category) {
         
