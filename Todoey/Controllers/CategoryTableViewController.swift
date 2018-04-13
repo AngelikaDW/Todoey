@@ -8,11 +8,12 @@
 
 import UIKit
 import RealmSwift
+import ChameleonFramework
 
 class CategoryTableViewController: SwipeTableViewController {
     var realm: Realm!
     
-    var categoryArray: Results<Category>?
+    var categories: Results<Category>?
     
 
     override func viewDidLoad() {
@@ -22,7 +23,8 @@ class CategoryTableViewController: SwipeTableViewController {
         
         loadCategories()
         
-        tableView.rowHeight = 80
+        tableView.separatorStyle = .none
+    
 
     }
     
@@ -33,7 +35,7 @@ class CategoryTableViewController: SwipeTableViewController {
        
         //Nil Coalescing Operator: if it is nil, jsut return 1
         //Save way to operate with the Optional, that could be nil
-        return categoryArray?.count ?? 1
+        return categories?.count ?? 1
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -42,7 +44,14 @@ class CategoryTableViewController: SwipeTableViewController {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
         //Default value NIL COALESCING OPERATOR
-        cell.textLabel?.text = categoryArray?[indexPath.row].name ?? "No Categories added yet"
+        
+        cell.textLabel?.text = categories?[indexPath.row].name ?? "No Categories added yet"
+        
+        cell.backgroundColor = UIColor(hexString: (categories?[indexPath.row].color)!) ?? UIColor.flatLime
+        
+       //Set the textColor to contrast the backgroundColor
+        cell.textLabel?.textColor = ContrastColorOf(cell.backgroundColor!, returnFlat: true)
+        
         return cell
         
     }
@@ -60,7 +69,7 @@ class CategoryTableViewController: SwipeTableViewController {
         
         if let indexPath = tableView.indexPathForSelectedRow {
             //print("This is the row clicked: \(categoryArray[indexPath.row])")
-            destinationVC.selectedCategory = categoryArray?[indexPath.row]
+            destinationVC.selectedCategory = categories?[indexPath.row]
         }
     }
 
@@ -82,7 +91,7 @@ class CategoryTableViewController: SwipeTableViewController {
   
     func loadCategories() {
         
-        categoryArray = realm.objects(Category.self)
+        categories = realm.objects(Category.self)
         
         tableView.reloadData()
     }
@@ -94,7 +103,7 @@ class CategoryTableViewController: SwipeTableViewController {
         //call the superclass method
         super.updateModel(at: indexPath)
         
-        if let categoryForDeletion = self.categoryArray?[indexPath.row] {
+        if let categoryForDeletion = self.categories?[indexPath.row] {
             do {
                 try self.realm.write {
                     self.realm.delete(categoryForDeletion)

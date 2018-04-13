@@ -8,10 +8,13 @@
 
 import Foundation
 import RealmSwift
+import ChameleonFramework
 
 class Category: Object {
     @objc dynamic var name: String = ""
     @objc dynamic var dateCreated: Date = Date()
+    @objc dynamic var color: String = UIColor.randomFlat.hexValue()
+    
     // inside each Category is a List pointing to the list forward relationship
     let items = List<Item>() //initialize an empty List of Item Object, all Item() will be appended to this List
     
