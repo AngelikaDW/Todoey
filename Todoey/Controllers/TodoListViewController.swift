@@ -12,6 +12,7 @@ import ChameleonFramework
 
 class TodoListViewController: SwipeTableViewController {
 
+    @IBOutlet weak var searchBar: UISearchBar!
     var toDoItems: Results<Item>?
     
     let realm = try! Realm()
@@ -24,10 +25,43 @@ class TodoListViewController: SwipeTableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
         
        
+        //Set the title in the nav bar
+        title = selectedCategory?.name
+        
+        guard let colorHex = selectedCategory?.color else {fatalError() }
+        
+        updateNavBar(withHexCode: colorHex)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+
+        updateNavBar(withHexCode: "1D9BF6")
     }
 
+    //MARK: - Nav Bar Setup Methods
+    
+    func updateNavBar(withHexCode colorHexCode: String){
+         guard let navBar = navigationController?.navigationBar else {fatalError("Navigation controller does not exist")}
+        guard let navBarColor = UIColor(hexString: colorHexCode) else {fatalError()}
+        navBar.barTintColor = navBarColor
+        
+        navBar.tintColor = ContrastColorOf(navBarColor, returnFlat: true)
+        
+        navBar.largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor: ContrastColorOf(navBarColor, returnFlat: true)]
+        
+        //Style the searchBar appearance no borders and same color to match the scheme
+        searchBar.barTintColor = navBarColor
+        searchBar.backgroundImage = UIImage()
+        
+    }
+    
+    
     //MARK - Tableview Datasource Methods
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return toDoItems?.count ?? 1
@@ -52,10 +86,14 @@ class TodoListViewController: SwipeTableViewController {
                 cell.backgroundColor = color
                 //Contrasting Text color white or black
                 cell.textLabel?.textColor = ContrastColorOf(color, returnFlat: true)
+                //Set the color of the accessoryType (checkmark) to the color
+                cell.tintColor = ContrastColorOf(color, returnFlat: true)
             }
             
             // Ternary operator
             cell.accessoryType = item.done ? .checkmark : .none
+            
+            
         } else { //if it is nill or it fails
             cell.textLabel?.text = "No Items Added Yet"
         }
