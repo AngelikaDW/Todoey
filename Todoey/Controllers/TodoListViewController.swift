@@ -71,7 +71,8 @@ class TodoListViewController: SwipeTableViewController {
         
         //Get cell from the super class SwipeTableVC - inherenting from super class
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
-    
+
+        //TODO: Introduce the edit function for the text in the cell!
         
         //If toDoItems is not nill then do the following:
         if let item = toDoItems?[indexPath.row] {
