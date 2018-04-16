@@ -13,7 +13,7 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
 
     override func viewDidLoad() {
         super.viewDidLoad()
-         tableView.rowHeight = 80
+        tableView.rowHeight = 80
         tableView.separatorStyle = .none
         
     }
@@ -22,7 +22,11 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
+        let longPressedRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPressed(_:)))
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! SwipeTableViewCell
+        
+        cell.addGestureRecognizer(longPressedRecognizer)
         
         cell.delegate = self
         return cell
@@ -58,6 +62,13 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
     func updateModel(at indexPath: IndexPath) {
         //Update the datamodel
         print("Category deleted from Superclass")
+    }
+    
+    @objc func longPressed(_ recogizer: UIGestureRecognizer) {
+        
+        print("Cell to be edited")
+        
+        
     }
     
 

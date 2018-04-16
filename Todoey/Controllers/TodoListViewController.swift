@@ -68,11 +68,10 @@ class TodoListViewController: SwipeTableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
+    
         //Get cell from the super class SwipeTableVC - inherenting from super class
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
 
-        //TODO: Introduce the edit function for the text in the cell!
         
         //If toDoItems is not nill then do the following:
         if let item = toDoItems?[indexPath.row] {
@@ -176,7 +175,7 @@ class TodoListViewController: SwipeTableViewController {
         tableView.reloadData()
     }
     
-   //MARK: - Delete Categories with Swipe
+   //MARK: - Delete Items with Swipe
     
     override func updateModel(at indexPath: IndexPath) {
         super.updateModel(at: indexPath)
@@ -188,6 +187,39 @@ class TodoListViewController: SwipeTableViewController {
                 }
             }catch {
                 print("Error deleting TodoItem: \(error)")
+            }
+        }
+    }
+    
+    //MARK: - Edit Items with Long Pressed Gesture
+    @objc override func longPressed(_ recogizer: UIGestureRecognizer) {
+        
+        if recogizer.state == UIGestureRecognizerState.ended {
+            let longPressedLocation = recogizer.location(in: self.tableView)
+            if let pressedIndexPath = self.tableView.indexPathForRow(at: longPressedLocation) {
+                var task = UITextField()
+                let alert = UIAlertController(title: "Modify item", message: "", preferredStyle: .alert)
+                let action = UIAlertAction(title: "Modify", style: .default) { (action) in
+                    
+                    if let item = self.toDoItems?[pressedIndexPath.row] {
+                        do {
+                            try self.realm.write {
+                                item.title = "\(task.text ?? "")"
+                            }
+                        } catch {
+                            print("Error updating item name: \(error)")
+                        }
+                    }
+                    self.tableView.reloadData()
+                }
+                alert.addTextField(configurationHandler: { (alertTextField) in
+                    task = alertTextField
+                    task.placeholder = "New item title"
+                
+                })
+                
+                alert.addAction(action)
+                present(alert, animated: true, completion: nil)
             }
         }
     }

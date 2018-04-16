@@ -43,6 +43,17 @@ class CategoryTableViewController: SwipeTableViewController {
         //Get cell from the super class SwipeTableVC - inherenting from super class
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
+        //TODO: - Create an editing function for the category cell
+        /*
+         select the cell with longPress and open a alert to rename the category
+         action/alert
+         UI longPressed
+         in the cell
+         maybe as well in the Superclass as both Category and TodoItems could use it
+         */
+        
+        
+        
         //Default value NIL COALESCING OPERATOR
         
         cell.textLabel?.text = categories?[indexPath.row].name ?? "No Categories added yet"
@@ -95,6 +106,11 @@ class CategoryTableViewController: SwipeTableViewController {
         
         tableView.reloadData()
     }
+    
+    func longPressed(sender: UILongPressGestureRecognizer)
+    {
+        print("longpressed")
+    }
 
     //MARK: - Delete Categories with Swipe
     //by calling and overriding SuperClass method  updateModel(at: indexPath)
@@ -110,6 +126,39 @@ class CategoryTableViewController: SwipeTableViewController {
                 }
             } catch {
                 print("Error deleting category status: \(error)")
+            }
+        }
+    }
+    //MARK: - Edit categories with long Press
+    
+    @objc override func longPressed(_ recogizer: UIGestureRecognizer) {
+        
+        if recogizer.state == UIGestureRecognizerState.ended {
+            let longPressedLocation = recogizer.location(in: self.tableView)
+            if let pressedIndexPath = self.tableView.indexPathForRow(at: longPressedLocation) {
+                var task = UITextField()
+                let alert = UIAlertController(title: "Modify category", message: "", preferredStyle: .alert)
+                let action = UIAlertAction(title: "Modify", style: .default) { (action) in
+                    
+                    if let category = self.categories?[pressedIndexPath.row] {
+                        do {
+                            try self.realm.write {
+                                category.name = "\(task.text ?? "")"
+                            }
+                        } catch {
+                            print("Error updating item name: \(error)")
+                        }
+                    }
+                    self.tableView.reloadData()
+                }
+                alert.addTextField(configurationHandler: { (alertTextField) in
+                    task = alertTextField
+                    task.placeholder = "New title for category"
+                    
+                })
+                
+                alert.addAction(action)
+                present(alert, animated: true, completion: nil)
             }
         }
     }
